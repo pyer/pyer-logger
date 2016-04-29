@@ -5,17 +5,16 @@
 # 
 # The messages will have varying levels reflecting their varying importance.
 # The levels, and their meanings, are:
-# * ERROR : an error condition
-# * WARN  : a warning
-# * INFO  : generic (useful) information about system operation
-# * DEBUG : low-level information for developers
+# 1. DEBUG : low-level information for developers
+# 2. INFO  : generic (useful) information about system operation
+# 3. WARN  : a warning
+# 4. ERROR : an error condition
 # 
 # So each message has a level, and the Logger itself has a level, which acts
 # as a filter, so you can control the amount of information emitted from the
 # logger without having to remove actual messages.
 # 
-# How to create a logger ?
-# ------------------------
+# == How to create a logger ?
 # 
 # 1. Create a logger which logs messages to STDERR/STDOUT.
 #      log = Logger.new(STDOUT, self.class)
@@ -29,51 +28,48 @@
 # 
 # Notice that self.class argument prints the class name of the caller object.
 # 
-# How to log a message ?
-# ----------------------
+# == How to log a message ?
 # 
 # Notice the different methods being used to log messages of various levels.
+#
 # Messages lower than log.level are not sent to output.
-# 
+#
+# Ranking: DEBUG < INFO < WARN < ERROR
+#
 # Default log.level is DEBUG. That means all messages are emitted.
 # 
-#      DEBUG < INFO < WARN < ERROR
+# 1. Debug message
+#      log.debug "dev info"
 # 
-# 1. log.error "error is #{ @code }"
+# 2. Information
+#      log.info  "some informations"
 # 
-# 2. log.warn  "a warning message"
+# 3. Warning message
+#      log.warn  "a warning message"
 # 
-# 3. log.info  "some informations"
-# 
-# 4. log.debug "dev info"
+# 4. Error message
+#      log.error "error is #{ @code }"
 # 
 # Messages are provided in a string or in a block, or both.
 # 
 # 1. Message in block.
-# 
 #      log.error { "Argument 'foo' not given." }
 # 
 # 2. Message as a string.
-# 
 #      log.error "Argument #{ @foo } mismatch."
 # 
 # 3. Both arguments
-# 
 #      log.error("Argument ") { "#{ @foo } mismatch." } 
 # 
-# How to set severity level ?
-# ---------------------------
-# 
+# == How to set severity level ?
+#
 #      log.level = INFO
 # 
-# How to close a logger ?
-# -----------------------
+# == How to close a logger ?
 # 
 #      log.close
 # 
-# 
-# Installation
-# ------------
+# == Installation
 # 
 #     gem install pyer-options
 # 
