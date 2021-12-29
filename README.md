@@ -2,6 +2,7 @@ Logger
 ======
 
 [![Gem Version](https://badge.fury.io/rb/pyer-logger.svg)](https://badge.fury.io/rb/pyer-logger)
+[![Ruby](https://github.com/pyer/logger/actions/workflows/ruby.yml/badge.svg)](https://github.com/pyer/logger/actions/workflows/ruby.yml)
 
 This Logger class provides a simple logging utility for Ruby applications.
 Log messages are sent to stdout, stderr, a file or a string by a Logger object.
