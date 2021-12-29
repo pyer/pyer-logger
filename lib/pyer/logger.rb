@@ -71,7 +71,7 @@
 #
 # == Installation
 #
-#     gem install pyer-options
+#     gem install pyer-logger
 #
 module Pyer
   require 'stringio'

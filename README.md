@@ -79,7 +79,7 @@ How to close a logger ?
 Installation
 ------------
 
-    gem install pyer-options
+    gem install pyer-logger
 
 Build
 -----
