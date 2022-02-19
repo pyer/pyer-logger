@@ -3,13 +3,13 @@ Logger
 
 [![Gem Version](https://badge.fury.io/rb/pyer-logger.svg)](https://badge.fury.io/rb/pyer-logger)
 [![Ruby](https://github.com/pyer/logger/actions/workflows/ruby.yml/badge.svg)](https://github.com/pyer/logger/actions/workflows/ruby.yml)
-[![Ruby Gem](https://github.com/pyer/logger/actions/workflows/gem-push.yml/badge.svg)](https://github.com/pyer/logger/actions/workflows/gem-push.yml)
 
 This Logger class provides a simple logging utility for Ruby applications.
 Log messages are sent to stdout, stderr, a file or a string by a Logger object.
 
 The messages will have varying levels reflecting their varying importance.
 The levels, and their meanings, are:
+* NONE  : no output
 * ERROR : an error condition
 * WARN  : a warning
 * INFO  : generic (useful) information about system operation
@@ -19,20 +19,35 @@ So each message has a level, and the Logger itself has a level, which acts
 as a filter, so you can control the amount of information emitted from the
 logger without having to remove actual messages.
 
+
 How to create a logger ?
 ------------------------
 
-1. Create a logger which logs messages to STDERR/STDOUT.
-     log = Logger.new(STDOUT, self.class)
-     log = Logger.new(STDERR, self.class)
+1. Create a default logger which logs messages to STDOUT
+     log = Logger.new
+
+2. Create a logger which logs messages to STDOUT or STDERR.
+     log = Logger.new(STDOUT)
+     log = Logger.new(STDERR)
 
 2. Create a logger for the file which has the specified name.
-     log = Logger.new('logfile.log', self.class)
+     log = Logger.new('logfile.log')
 
 3. Create a logger which logs messages to a string.
-     log = Logger.new(STRING, self.class)
+     log = Logger.new(STRING)
 
-Notice that self.class argument prints the class name of the caller object.
+
+How to set default severity level ?
+-----------------------------------
+
+     Logger.level = NONE
+
+
+How to set severity level ?
+---------------------------
+
+     log.level = INFO
+
 
 How to log a message ?
 ----------------------
@@ -42,7 +57,7 @@ Messages lower than log.level are not sent to output.
 
 Default log.level is DEBUG. That means all messages are emitted.
 
-     DEBUG < INFO < WARN < ERROR
+     DEBUG < INFO < WARN < ERROR < NONE
 
 1. log.error "error is #{ @code }"
 
@@ -66,10 +81,6 @@ Messages are provided in a string or in a block, or both.
 
      log.error("Argument ") { "#{ @foo } mismatch." } 
 
-How to set severity level ?
----------------------------
-
-     log.level = INFO
 
 How to close a logger ?
 -----------------------
