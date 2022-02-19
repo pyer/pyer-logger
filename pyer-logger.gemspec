@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name          = 'pyer-logger'
-  s.version       = '1.1.0'
+  s.version       = '1.2.0'
   s.author        = 'Pierre BAZONNARD'
   s.email         = ['pierre.bazonnard@gmail.com']
   s.homepage      = 'https://github.com/pyer/pyer-logger'

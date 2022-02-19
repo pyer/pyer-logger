@@ -9,6 +9,7 @@
 # 2. INFO  : generic (useful) information about system operation
 # 3. WARN  : a warning
 # 4. ERROR : an error condition
+# 5. NONE  : no log
 #
 # So each message has a level, and the Logger itself has a level, which acts
 # as a filter, so you can control the amount of information emitted from the
@@ -16,27 +17,25 @@
 #
 # == How to create a logger ?
 #
-# 1. Create a logger which logs messages to STDERR/STDOUT.
-#      log = Logger.new(STDOUT, self.class)
-#      log = Logger.new(STDERR, self.class)
+# 1. Create a default logger which logs messages to STDOUT
+#      log = Logger.new
 #
-# 2. Create a logger for the file which has the specified name.
-#      log = Logger.new('logfile.log', self.class)
+# 2. Create a logger which logs messages to STDOUT or STDERR.
+#      log = Logger.new(STDOUT)
+#      log = Logger.new(STDERR)
 #
-# 3. Create a logger which logs messages to a string.
-#      log = Logger.new(STRING, self.class)
+# 3. Create a logger for the file which has the specified name.
+#      log = Logger.new('logfile.log')
 #
-# Notice that self.class argument prints the class name of the caller object.
+# 4. Create a logger which logs messages to a string.
+#      log = Logger.new(STRING)
 #
 # == How to log a message ?
 #
-# Notice the different methods being used to log messages of various levels.
-#
 # Messages lower than log.level are not sent to output.
-#
-# Ranking: DEBUG < INFO < WARN < ERROR
-#
-# Default log.level is DEBUG. That means all messages are emitted.
+# Ranking: DEBUG < INFO < WARN < ERROR < NONE
+# Default Logger.level is DEBUG. That means all messages are emitted.
+# Each logger level is initialized with Logger.level and can set a different level.
 #
 # 1. Debug message
 #      log.debug "dev info"
@@ -65,6 +64,10 @@
 #
 #      log.level = INFO
 #
+# == How to set default severity level ?
+#
+#      Logger.level = NONE
+#
 # == How to close a logger ?
 #
 #      log.close
@@ -84,59 +87,59 @@ module Pyer
       INFO  = 1
       WARN  = 2
       ERROR = 3
+      NONE  = 4
       # Severity label for logging. (max 5 char)
-      SEVERITY_LABELS = ['DEBUG', 'INFO ', 'WARN ', 'ERROR']
-      COLOURED_LABELS = ["\033[44mDEBUG\033[m", "\033[42mINFO \033[m", "\033[43mWARN \033[m", "\033[41mERROR\033[m"]
+      SEVERITY_LABELS = ['DEBUG', 'INFO ', 'WARN ', 'ERROR', 'NONE']
+      COLOURED_LABELS = ["\033[44mDEBUG\033[m", "\033[42mINFO \033[m", "\033[43mWARN \033[m", "\033[41mERROR\033[m", ""]
     end
     include Severity
 
     STRING = -1
 
+    @@default_level = DEBUG
+
+    def self.level=(level)
+      @@default_level = level
+    end
+
+    def self.level
+      @@default_level
+    end
+
     # Logging severity threshold (e.g. <tt>Logger::INFO</tt>).
     attr_accessor :level
 
-    # Returns +true+ if the current severity level allows the printing of the message
-
-    def debug?
-      @level <= DEBUG
-    end
-
-    def info?
-      @level <= INFO
-    end
-
-    def warn?
-      @level <= WARN
-    end
-
-    def error?
-      @level <= ERROR
-    end
+    # Prefix can be the class name
+    attr_accessor :prefix
 
     # Create an instance.
     # outputs log messages on STDOUT, STDERR, a file or a StringIO
     #
-    def initialize(logdev = nil, klass = nil)
-      @level = DEBUG
+    def initialize(logdev = STDOUT)
+      @level = @@default_level
+      @prefix = ""
       @logdev = $stdout
       @severity_label = COLOURED_LABELS
-      @klass_name = ''
-      @klass_name = klass.name unless klass.nil?
-      return if logdev.nil?
-      if logdev == STRING
-        # no log device implies that messages are stored in a string
-        @logdev = StringIO.new
-        @severity_label = SEVERITY_LABELS
+      if logdev == STDOUT
+        @logdev = $stdout
       else
-        if logdev == STDOUT
-          @logdev = $stdout
+        if logdev == STDERR
+          @logdev = $stderr
         else
-          if logdev == STDERR
-            @logdev = $stderr
-          else
-            # the default log device is a file name
-            @logdev = File.new(logdev.to_s, 'a')
+          if logdev == STRING
+            # no log device implies that messages are stored in a string
+            @logdev = StringIO.new
             @severity_label = SEVERITY_LABELS
+          else
+            if logdev.is_a? String
+              # the log device is a file name
+              @logdev = File.new(logdev.to_s, 'a')
+              @severity_label = SEVERITY_LABELS
+            else
+              # the default is no log
+              @level = NONE
+              @logdev = $stderr
+            end
           end
         end
       end
@@ -179,15 +182,15 @@ module Pyer
       return if @logdev.nil? || severity < @level
       message = '' if message.nil?
       message += block.call if block_given?
-      @logdev.write(Formatter.new.string(@klass_name, @severity_label[severity], message))
+      @logdev.write(Formatter.new.string(@prefix, @severity_label[severity], message))
     end
   end
 
   # Formatter class
   class Formatter
     FORMAT = "%s [%5d] %12s %s  %s\n"
-    def string(klass_name, label, message = nil)
-      format(FORMAT, format_datetime(Time.now), $$, klass_name, label, format_message(message))
+    def string(prefix, label, message = nil)
+      format(FORMAT, format_datetime(Time.now), $$, prefix, label, format_message(message))
     end
 
     private
@@ -222,3 +225,4 @@ DEBUG = Pyer::Logger::DEBUG
 INFO  = Pyer::Logger::INFO
 WARN  = Pyer::Logger::WARN
 ERROR = Pyer::Logger::ERROR
+NONE  = Pyer::Logger::NONE
