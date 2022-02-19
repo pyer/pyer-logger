@@ -5,9 +5,11 @@ Logger
 [![Ruby](https://github.com/pyer/logger/actions/workflows/ruby.yml/badge.svg)](https://github.com/pyer/logger/actions/workflows/ruby.yml)
 
 This Logger class provides a simple logging utility for Ruby applications.
+
 Log messages are sent to stdout, stderr, a file or a string by a Logger object.
 
 The messages will have varying levels reflecting their varying importance.
+
 The levels, and their meanings, are:
 * NONE  : no output
 * ERROR : an error condition
@@ -24,16 +26,21 @@ How to create a logger ?
 ------------------------
 
 1. Create a default logger which logs messages to STDOUT
+
      log = Logger.new
 
 2. Create a logger which logs messages to STDOUT or STDERR.
+
      log = Logger.new(STDOUT)
+
      log = Logger.new(STDERR)
 
 2. Create a logger for the file which has the specified name.
+
      log = Logger.new('logfile.log')
 
 3. Create a logger which logs messages to a string.
+
      log = Logger.new(STRING)
 
 
@@ -53,6 +60,7 @@ How to log a message ?
 ----------------------
 
 Notice the different methods being used to log messages of various levels.
+
 Messages lower than log.level are not sent to output.
 
 Default log.level is DEBUG. That means all messages are emitted.
