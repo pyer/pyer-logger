@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.test_files    = []
   s.require_paths = ['lib']
 
-  s.required_ruby_version = '>= 3.4.0'
+  s.required_ruby_version = '>= 3.0.0'
 
   s.add_runtime_dependency     'stringio', '~> 3.0'
 
